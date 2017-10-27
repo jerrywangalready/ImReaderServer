@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jerrywang.comm.dictionary.dao.DictionaryDao">
+
+    <!-- 获取字典数据 -->
+    <select id="getDict" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        <choose>
+           <when test="key != null and key != ''">
+               ${key} CODE_KEY,
+           </when>
+           <otherwise>
+               CODE_KEY,
+           </otherwise>
+        </choose>
+        <choose>
+           <when test="value != null and value != ''">
+               ${value} CODE_VALUE
+           </when>
+           <otherwise>
+               CODE_VALUE
+           </otherwise>
+        </choose>
+          FROM ${table}
+         WHERE 1=1
+           <if test="type != null and type != ''">
+           AND CODE_TYPE = #{type}
+           </if>
+           <if test="where != null and where != ''">
+           AND ${where}
+           </if>
+           <if test="order != null and order !=''">
+               ORDER BY ${order}
+           </if>
+    </select>
+
+</mapper>

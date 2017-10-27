@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jerrywang.imReaderServer.index.dao.IndexDao">
+    <update id="updateDisplayStateByUser">
+        update t_bug set is_display = '1' where object_code = #{obj} and
+        principal = #{username};
+    </update>
+
+    <select id="getObjectsByUser" resultType="java.util.Map" parameterType="String">
+        SELECT ai.card_id,ci.card_name
+          FROM account_info ai
+     LEFT JOIN card_info ci
+            ON ai.card_id = ci.card_id
+         WHERE ai.user_id = #{USERNAME}
+    </select>
+    <select id="countNew" resultType="java.lang.String">
+        SELECT
+          COUNT(1)
+         FROM v_issue vi
+        WHERE 1=1
+          AND vi.object_code = #{obj}
+          AND ((vi.STATE in ('1') AND vi.principal = #{username})
+          OR (vi.STATE = '3' AND (SELECT COUNT(1) FROM p_role_user pru WHERE pru.object_code = #{obj} AND pru.USERNAME = #{username} AND pru.ROLE_ID = 'tester') >= 1))
+          AND vi.update_time > #{dt}
+        ORDER BY vi.update_time DESC
+    </select>
+    <select id="getNew" resultType="java.util.Map">
+        SELECT
+          vi.UUID,
+          vi.CODE,
+          vi.TITLE,
+          vi.ISSUE_TYPE,
+          vi.PRIORITY,
+          vi.VERSION_CODE,
+          date_format(Vi.update_time, '%Y-%m-%d %T') UPDATE_TIME,
+          su.NICKNAME CREATE_USER,
+          vi.STATE,
+          su2.nickname PRINCIPAL
+         FROM v_issue vi
+         LEFT JOIN s_users su
+           ON su.username = vi.create_user
+         LEFT JOIN s_users su2
+           ON su2.username = vi.principal
+        WHERE 1=1
+          AND vi.object_code = #{obj}
+          AND ((vi.STATE in ('1') AND vi.principal = #{username})
+          OR (vi.STATE = '3' AND (SELECT COUNT(1) FROM p_role_user pru WHERE pru.object_code = #{obj} AND pru.USERNAME = #{username} AND pru.ROLE_ID = 'tester') >= 1))
+          AND vi.update_time > #{dt}
+        ORDER BY vi.update_time DESC
+    </select>
+    <select id="getBalance" resultType="java.lang.Float">
+        select balance from account_info WHERE card_id = #{cardId} and user_id = #{userId};
+    </select>
+    <select id="getAccountInfo" resultType="java.util.Map">
+        SELECT
+          cr.uuid,
+          cr.recordtime,
+          cr.recordtime orgriTime,
+          cr.breakfast,
+          cr.lunch,
+          cr.dinner,
+          cr.other,
+          cr.remark
+        FROM consume_record cr
+        WHERE cr.card_id = #{cardId}
+              AND cr.user_id = #{userId}
+              AND cr.recordtime = #{recordTime}
+    </select>
+    <select id="queryList" resultType="java.util.Map">
+        SELECT
+          cr.uuid,
+          cr.breakfast,
+          cr.lunch,
+          cr.dinner,
+          cr.other,
+          cr.recordtime,
+          cr.remark
+        FROM consume_record cr
+        WHERE cr.card_id = #{cardId} AND cr.user_id = #{userId}
+        <if test="startTime != null and startTime != ''">
+            AND cr.recordtime >= #{startTime}
+        </if>
+        <if test="finishTime != null and finishTime != ''">
+            <![CDATA[
+            AND cr.recordtime <= #{finishTime}
+            ]]>
+        </if>
+
+        ORDER BY cr.recordtime DESC
+    </select>
+
+    <insert id="add">
+        INSERT INTO consume_record (
+          uuid,
+          user_id,
+          breakfast,
+          lunch,
+          dinner,
+          other,
+          recordtime,
+          updatetime,
+          remark,
+          card_id
+        )
+        VALUES (
+          #{uuid},
+          #{userId},
+          #{breakfast, jdbcType = DECIMAL},
+          #{lunch, jdbcType = DECIMAL},
+          #{dinner, jdbcType = DECIMAL},
+          #{other, jdbcType = DECIMAL},
+          #{recordTime},
+          sysdate(),
+          #{remark, jdbcType = VARCHAR},
+          #{cardId}
+        )
+    </insert>
+
+    <update id="upd">
+        UPDATE consume_record
+        SET
+          breakfast = #{breakfast, jdbcType = DECIMAL},
+          lunch = #{lunch, jdbcType = DECIMAL},
+          dinner = #{dinner, jdbcType = DECIMAL},
+          other = #{other, jdbcType = DECIMAL},
+          updatetime = sysdate(),
+          remark = #{remark, jdbcType = VARCHAR}
+        WHERE uuid = #{uuid};
+    </update>
+
+    <update id="checkBalance">
+        UPDATE account_info ai
+        SET ai.balance = balance - #{money} + ifnull((SELECT breakfast + lunch + dinner + other
+                                    FROM consume_record
+                                    WHERE uuid = #{uuid}),0)
+        WHERE ai.user_id = #{userId}
+              AND ai.card_id = #{cardId}
+    </update>
+
+</mapper>

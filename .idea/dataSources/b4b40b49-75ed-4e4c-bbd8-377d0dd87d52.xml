@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="imReader@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="imReader">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="account"/>
+    <schema id="4" parent="1" name="demo"/>
+    <schema id="5" parent="1" name="information_schema"/>
+    <schema id="6" parent="1" name="mysql"/>
+    <schema id="7" parent="1" name="pe"/>
+    <schema id="8" parent="1" name="performance_schema"/>
+    <schema id="9" parent="1" name="pesiticide"/>
+    <schema id="10" parent="1" name="pesticide"/>
+    <schema id="11" parent="1" name="sys"/>
+    <table id="12" parent="2" name="IR_SOUNDS_LIST">
+      <Comment>录音信息表</Comment>
+    </table>
+    <table id="13" parent="2" name="IR_USERS"/>
+    <table id="14" parent="2" name="s_properties">
+      <Comment>配置信息表</Comment>
+    </table>
+    <column id="15" parent="12" name="UUID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="16" parent="12" name="CLASS_CODE">
+      <Position>2</Position>
+      <DataType>varchar(10)|0</DataType>
+    </column>
+    <column id="17" parent="12" name="OPEN_ID">
+      <Position>3</Position>
+      <DataType>varchar(40)|0</DataType>
+    </column>
+    <column id="18" parent="12" name="SOUNDS_NAME">
+      <Position>4</Position>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="19" parent="12" name="SOUNDS_LENGTH">
+      <Position>5</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="20" parent="12" name="CREATE_TIME">
+      <Position>6</Position>
+      <DataType>datetime|0</DataType>
+    </column>
+    <column id="21" parent="12" name="CARD_DATE">
+      <Position>7</Position>
+      <DataType>date|0</DataType>
+    </column>
+    <column id="22" parent="13" name="UUID">
+      <Position>1</Position>
+      <Comment>主键</Comment>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="23" parent="13" name="OPEN_ID">
+      <Position>2</Position>
+      <DataType>varchar(40)|0</DataType>
+    </column>
+    <column id="24" parent="13" name="USER_ID">
+      <Position>3</Position>
+      <DataType>varchar(18)|0</DataType>
+    </column>
+    <column id="25" parent="13" name="USER_NAME">
+      <Position>4</Position>
+      <DataType>varchar(50)|0</DataType>
+    </column>
+    <column id="26" parent="14" name="p_key">
+      <Position>1</Position>
+      <Comment>key</Comment>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="27" parent="14" name="p_value">
+      <Position>2</Position>
+      <Comment>value</Comment>
+      <DataType>varchar(400)|0</DataType>
+    </column>
+    <key id="28" parent="14" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>p_key</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>

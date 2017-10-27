@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jerrywang.imReaderServer.settings.dao.SettingsDao">
+    <update id="saveNewPassword">
+        UPDATE s_users su
+        SET su.password = #{newPassword}
+        WHERE su.username = #{username}
+    </update>
+
+    <select id="checkPassword" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM s_users su
+        WHERE su.username = #{username}
+              AND su.password = #{password}
+    </select>
+</mapper>

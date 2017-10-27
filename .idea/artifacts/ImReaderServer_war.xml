@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ImReaderServer:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="imReaderServer.war">
+      <element id="artifact" artifact-name="ImReaderServer:war exploded" />
+    </root>
+  </artifact>
+</component>
